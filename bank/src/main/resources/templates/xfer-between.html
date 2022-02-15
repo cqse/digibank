@@ -33,7 +33,7 @@
 	                   					<div class="form-group text-left">
 	                   						<div class="sufee-alert alert with-close alert-danger alert-dismissible fade show" th:if="${errorMsg}">
 						                       <span class="badge badge-pill badge-danger">Error</span>
-						                         <span th:text="${errorMsg}"></span>
+						                         <span id="error" th:text="${errorMsg}"></span>
 						                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 						                           <span aria-hidden="true">&times;</span>
 						                       </button>
@@ -73,7 +73,7 @@
 		                        		</div>		
                       				</div> <!-- End Card Body -->
 		                   			<div class="card-footer">
-		                     			<button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-dot-circle-o"></i> Submit</button>
+		                     			<button type="submit" id="formSubmitButton" class="btn btn-primary btn-sm"><i class="fa fa-dot-circle-o"></i> Submit</button>
 		                     			<button type="reset" class="btn btn-danger btn-sm"><i class="fa fa-ban"></i> Reset</button>
 		                  			</div> <!-- End Card Footer -->	
                      			</form>

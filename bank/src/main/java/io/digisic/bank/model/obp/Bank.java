@@ -1,6 +1,8 @@
 package io.digisic.bank.model.obp;
 
-
+/**
+* Implements REQ-3
+*/
 public class Bank {
 	
 	private String id;
@@ -99,5 +101,16 @@ public class Bank {
 	public void setBank_routing(Routing bank_routing) {
 		this.bank_routing = bank_routing;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Bank{" +
+				"id='" + id + '\'' +
+				", short_name='" + short_name + '\'' +
+				", full_name='" + full_name + '\'' +
+				", logo='" + logo + '\'' +
+				", website='" + website + '\'' +
+				", bank_routing=" + bank_routing +
+				'}';
+	}
 }

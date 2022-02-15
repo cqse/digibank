@@ -1,0 +1,10 @@
+# Teamscale Folder Mapping
+version = "1.0"
+
+root = true
+
+[server]
+url = "http://demo-bank-teamscale:8080/"
+
+[project]
+id = "digibank"

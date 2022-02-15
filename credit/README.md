@@ -15,10 +15,7 @@ Digital Credit is a sample application that was developed for exploratory purpos
 ## Executing Tests
 
 * JUnit Tests - Execute "mvn clean test"
-* Serenity BDD Acceptance Tests - Execute "mvn clean verify"
-  * Serenity BDD tests use Cucumber Feature file definitions. 
-    * API Test are executed using the Rest Assured Java framework.
-  * Use '-Dcucumber.options="--tags {tag}"' maven command line option to filter test execution based on Feature or Scenario tags defined within the [feature files](src/test/resources/features).
+* No acceptance tests are currently defined for this module.
 
 ## Packaging
 
@@ -58,7 +55,6 @@ Digital Credit can be deployed as a single standalone application service.
 * [MSSQL Server Database Engine](https://www.microsoft.com/en-us/sql-server/default.aspx) - Microsoft SQL Server
 * [MySQL Database Engine](https://www.mysql.com/) - MySQL 
 * [PostgreSQL Database Engine](https://www.postgresql.org/) - PostgreSQL
-* [Serenity BDD](http://www.thucydides.info/#/) - Acceptance Testing Framework
 * [JUnit 5](https://junit.org/junit5/) - Unit Testing Framework
 
 ## Authors

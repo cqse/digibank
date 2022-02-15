@@ -16,11 +16,12 @@ Digital Bank is a sample application that was developed for exploratory purposes
 ## Executing Tests
 
 * JUnit Tests - Execute "mvn clean test"
-* Serenity BDD Acceptance Tests - Execute "mvn clean verify"
-  * Serenity BDD tests use Cucumber Feature file definitions. 
-    * UI Tests are executed using the Selenium Java framework.
-    * API Test are executed using the Rest Assured Java framework.
-  * Use '-Dcucumber.options="--tags {tag}"' maven command line option to filter test execution based on Feature or Scenario tags defined within the [feature files](src/test/resources/features).
+* Playwright Acceptance Tests - Execute "mvn clean verify"
+  * Boots the application via `spring-boot-maven-plugin`, then runs JUnit 5 integration tests under `src/test/java/io/digisic/bank/test/playwright/` against the live instance.
+  * UI tests drive a Chromium browser via [Playwright Java](https://playwright.dev/java/). API tests use Playwright's `APIRequestContext`.
+  * Chromium is installed automatically during `process-test-classes` via `exec-maven-plugin`.
+  * Override the browser with `-Dpw.browser=firefox|webkit`. Override the application URL with `-Dapp.base.url=...` (also accepts `-Dui.base.url` / `-Dapi.base.url`).
+  * Filter execution with the failsafe `-Dit.test=ClassName` flag (e.g. `mvn -pl bank verify -Dit.test=LoginUserIT`).
 
 ## Packaging
 
@@ -73,8 +74,8 @@ Digital Bank can be deployed as a single standalone application service or be de
 * [MS SQL Server Database Engine](https://www.microsoft.com/en-us/sql-server/default.aspx) - Microsoft SQL Server
 * [MySQL Database Engine](https://www.mysql.com/) - MySQL 
 * [PostgreSQL Database Engine](https://www.postgresql.org/) - PostgreSQL
-* [Serenity BDD](http://www.thucydides.info/#/) - Acceptance Testing Framework
-* [JUnit 5](https://junit.org/junit5/) - Unit Testing Framework
+* [Playwright Java](https://playwright.dev/java/) - Browser & API Acceptance Testing
+* [JUnit 5](https://junit.org/junit5/) - Unit & Integration Testing Framework
 * [CodeSV](http://codesv.io/) - Unit Testing with Mock Services
 * [BlazeMeter](https://www.blazemeter.com/) - Functional / Performance API & UI Testing Services
 

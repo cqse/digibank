@@ -136,7 +136,21 @@ public class AtmLocation {
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "AtmLocation {" +
+				"\nName:\t\t" + name +
+				"\nDescription:\t" + description +
+				"\nStreet:\t\t" + street +
+				"\nCity:\t\t" + city +
+				"\nState:\t\t" + state +
+				"\nZipcode:\t\t" + zipcode +
+				"\nCountry:\t\t" + country +
+				"\nDistance:\t" + distance +
+				"\nLatitude:\t" + latitude +
+				"\nLongitude:\t" + longitude +
+				"\n}";
+	}
 
 }

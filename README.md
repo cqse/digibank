@@ -16,11 +16,9 @@ Digital Bank is a sample application that was developed for exploratory purposes
 ## Executing Tests
 
 * JUnit Tests - Execute "mvn clean test"
-* Serenity BDD Acceptance Tests - Execute "mvn clean verify"
-  * Serenity BDD tests use Cucumber Feature file definitions. 
-    * UI Tests are executed using the Selenium Java framework.
-    * API Test are executed using the Rest Assured Java framework.
-  * Use '-Dcucumber.options="--tags {tag}"' maven command line option to filter test execution based on Feature or Scenario tags defined within the [feature files](src/test/resources/features).
+* Playwright Acceptance Tests - Execute "mvn -pl bank verify"
+  * UI and API tests are written in Playwright Java + JUnit 5 and live under [bank/src/test/java/io/digisic/bank/test/playwright](bank/src/test/java/io/digisic/bank/test/playwright).
+  * Chromium is installed automatically during the `process-test-classes` phase.
 
 ## Packaging
 
@@ -73,7 +71,7 @@ Digital Bank can be deployed as a single standalone application service or be de
 * [MS SQL Server Database Engine](https://www.microsoft.com/en-us/sql-server/default.aspx) - Microsoft SQL Server
 * [MySQL Database Engine](https://www.mysql.com/) - MySQL 
 * [PostgreSQL Database Engine](https://www.postgresql.org/) - PostgreSQL
-* [Serenity BDD](http://www.thucydides.info/#/) - Acceptance Testing Framework
+* [Playwright](https://playwright.dev/java/) - End-to-End Testing Framework
 * [JUnit 5](https://junit.org/junit5/) - Unit Testing Framework
 * [CodeSV](http://codesv.io/) - Unit Testing with Mock Services
 * [BlazeMeter](https://www.blazemeter.com/) - Functional / Performance API & UI Testing Services

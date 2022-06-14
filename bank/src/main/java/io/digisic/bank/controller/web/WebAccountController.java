@@ -358,6 +358,27 @@ public class WebAccountController extends WebCommonController {
 
         Users user = userService.findByUsername(principal.getName());
 
+        // Check amount is greater than zero
+        if (accountTransaction.getAmount().signum() != 1) {
+
+            // Return error
+            model.addAttribute(MODEL_ATT_ERROR_MSG, "The deposit amount ($"
+                    + accountTransaction.getAmount()
+                    + ") must be greater than $0.00");
+
+            // Get all accounts
+            List<Account> accountList = accountService.getCheckingAccounts(user);
+            accountList.addAll(accountService.getSavingsAccounts(user));
+            model.addAttribute(MODEL_ATT_ACCT_LIST, accountList);
+            model.addAttribute(MODEL_ATT_ACCOUNT, account);
+            model.addAttribute(MODEL_ATT_ACCT_TRANS, accountTransaction);
+
+            // Add format patterns
+            model.addAttribute(MODEL_ATT_PATTERN_TRANS_AMOUNT, Patterns.TRANSACTION_AMOUNT);
+
+            return Constants.VIEW_DEPOSIT;
+        }
+
         // Set Transaction Description
         accountTransaction.setDescription("Online Deposit");
 

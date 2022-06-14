@@ -473,6 +473,12 @@ public class WebAccountController extends WebCommonController {
             }
         }
 
+        if (bError) {
+            handleError(model, account, accountTransaction, user);
+
+            return Constants.VIEW_WITHDRAW;
+        }
+
         // Set Transaction Description
         accountTransaction.setDescription("Online Withdrawl");
 

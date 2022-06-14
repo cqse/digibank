@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -181,6 +182,7 @@ public class WebAccountController extends WebCommonController {
             model.addAttribute(MODEL_ATT_ACCOUNT, newAccount);
 
             // Add format patterns
+            LOG.debug("Adding format patterns");
             model.addAttribute(MODEL_ATT_PATTERN_TRANS_AMOUNT, Patterns.TRANSACTION_AMOUNT);
 
             return Constants.VIEW_SAV_ADD;
@@ -366,15 +368,7 @@ public class WebAccountController extends WebCommonController {
                     + accountTransaction.getAmount()
                     + ") must be greater than $0.00");
 
-            // Get all accounts
-            List<Account> accountList = accountService.getCheckingAccounts(user);
-            accountList.addAll(accountService.getSavingsAccounts(user));
-            model.addAttribute(MODEL_ATT_ACCT_LIST, accountList);
-            model.addAttribute(MODEL_ATT_ACCOUNT, account);
-            model.addAttribute(MODEL_ATT_ACCT_TRANS, accountTransaction);
-
-            // Add format patterns
-            model.addAttribute(MODEL_ATT_PATTERN_TRANS_AMOUNT, Patterns.TRANSACTION_AMOUNT);
+            handleError(model, account, accountTransaction, user);
 
             return Constants.VIEW_DEPOSIT;
         }
@@ -398,6 +392,18 @@ public class WebAccountController extends WebCommonController {
 
         // Return to the checking view - ensure the account for the deposit is in focus
         return Constants.DIR_REDIRECT + Constants.VIEW_CHK_VIEW + "?" + MODEL_ATT_ACCT_SEL_SWITCH + "=" + account.getId();
+    }
+
+    private void handleError(Model model, Account account, AccountTransaction accountTransaction, Users user) {
+        // Get all accounts
+        List<Account> accountList = accountService.getCheckingAccounts(user);
+        accountList.addAll(accountService.getSavingsAccounts(user));
+        model.addAttribute(MODEL_ATT_ACCT_LIST, accountList);
+        model.addAttribute(MODEL_ATT_ACCOUNT, account);
+        model.addAttribute(MODEL_ATT_ACCT_TRANS, accountTransaction);
+
+        // Add format patterns
+        model.addAttribute(MODEL_ATT_PATTERN_TRANS_AMOUNT, Patterns.TRANSACTION_AMOUNT);
     }
 
     @GetMapping(Constants.URI_WITHDRAW)
@@ -438,6 +444,34 @@ public class WebAccountController extends WebCommonController {
         boolean bError = false;
 
         Users user = userService.findByUsername(principal.getName());
+
+        // Check amount is greater than zero
+        if (accountTransaction.getAmount().signum() != 1) {
+
+            // Return error
+            model.addAttribute(MODEL_ATT_ERROR_MSG, "The withdraw amount ($"
+                    + accountTransaction.getAmount()
+                    + ") must be greater than $0.00");
+
+            bError = true;
+
+        } else {
+
+            // check that amount is not greater than available
+            BigDecimal maxAvailable = account.getCurrentBalance().add(account.getAccountType().getOverdraftLimit());
+
+            if (accountTransaction.getAmount().compareTo(maxAvailable) == 1) {
+
+                // Return error
+                model.addAttribute(MODEL_ATT_ERROR_MSG, "The withdraw amount ($"
+                        + accountTransaction.getAmount()
+                        + ") is greater than the available balance ($"
+                        + account.getCurrentBalance() + ") and overdraft limit ($"
+                        + account.getAccountType().getOverdraftLimit() + ").");
+
+                bError = true;
+            }
+        }
 
         // Set Transaction Description
         accountTransaction.setDescription("Online Withdrawl");

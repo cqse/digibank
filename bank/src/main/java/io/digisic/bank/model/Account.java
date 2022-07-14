@@ -1,9 +1,17 @@
 package io.digisic.bank.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,11 +24,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
-import org.springframework.format.annotation.DateTimeFormat;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import io.digisic.bank.model.security.Users;
 
 @Entity
@@ -71,11 +75,16 @@ public class Account {
 	@JsonIgnore
 	@ManyToOne (fetch = FetchType.EAGER)
 	private Users coowner;
-	
+
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@OrderBy("transaction_date DESC")
-    @JsonIgnore
-    private List<AccountTransaction> acountTransactionList;
+	@JsonIgnore
+	private List<AccountTransaction> acountTransactionList;
+
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OrderBy("transaction_date DESC")
+	@JsonIgnore
+	private List<QuickSaveOrder> quickSaveOrderList;
 	
 	
 	/*
@@ -267,12 +276,26 @@ public class Account {
 	public List<AccountTransaction> getAcountTransactionList() {
 		return acountTransactionList;
 	}
-	
+
 	/**
 	 * @param acountTransactionList the acountTransactionList to set
 	 */
 	public void setAcountTransactionList(List<AccountTransaction> acountTransactionList) {
 		this.acountTransactionList = acountTransactionList;
+	}
+
+	/**
+	 * @return the quickSaveOrderList
+	 */
+	public List<QuickSaveOrder> getQuickSaveOrderList() {
+		return quickSaveOrderList;
+	}
+
+	/**
+	 * @param quickSaveOrderList the quickSaveOrderList to set
+	 */
+	public void setQuickSaveOrderList(List<QuickSaveOrder> quickSaveOrderList) {
+		this.quickSaveOrderList = quickSaveOrderList;
 	}
 
 	/**

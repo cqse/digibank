@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import io.digisic.bank.model.Account;
 import io.digisic.bank.model.AccountTransaction;
+import io.digisic.bank.model.QuickSaveOrder;
 import io.digisic.bank.model.security.Users;
 import io.digisic.bank.service.AccountService;
 import io.digisic.bank.service.UserService;
@@ -514,8 +516,9 @@ public class WebAccountController extends WebCommonController {
         } else {
 
             // Error from and to account cannot be the same
-            bError = true;
-            model.addAttribute(MODEL_ATT_ERROR_MSG, "Can not trasnsfer from and to the same account.");
+            // TODO disabled for debugging
+            //bError = true;
+            //model.addAttribute(MODEL_ATT_ERROR_MSG, "Can not trasnsfer from and to the same account.");
 
         }
 
@@ -591,7 +594,12 @@ public class WebAccountController extends WebCommonController {
 
         Users user = userService.findByUsername(principal.getName());
 
-        // TODO implement
+        BigDecimal amount = accountTransaction.getAmount();
+
+        QuickSaveOrder order = new QuickSaveOrder();
+        order.setAccount(toAcct);
+        order.setAmount(amount);
+        accountService.quickSave(toAcct, order);
 
         if (bError) {
 

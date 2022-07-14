@@ -1,5 +1,11 @@
 package io.digisic.bank.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -8,17 +14,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.digisic.bank.model.Account;
 import io.digisic.bank.model.AccountStanding;
 import io.digisic.bank.model.AccountTransaction;
 import io.digisic.bank.model.AccountType;
 import io.digisic.bank.model.OwnershipType;
+import io.digisic.bank.model.QuickSaveOrder;
 import io.digisic.bank.model.TransactionCategory;
 import io.digisic.bank.model.TransactionState;
 import io.digisic.bank.model.TransactionType;
@@ -28,6 +30,7 @@ import io.digisic.bank.repository.AccountStandingRepository;
 import io.digisic.bank.repository.AccountTransactionRepository;
 import io.digisic.bank.repository.AccountTypeRepository;
 import io.digisic.bank.repository.OwnershipTypeRepository;
+import io.digisic.bank.repository.QuickSaveOrderRepository;
 import io.digisic.bank.repository.TransactionCategoryRepository;
 import io.digisic.bank.repository.TransactionStateRepository;
 import io.digisic.bank.repository.TransactionTypeRepository;
@@ -56,9 +59,12 @@ public class AccountService {
 	
 	@Autowired
 	private TransactionTypeRepository transactionTypeRepository;
-	
-	@Autowired 
+
+	@Autowired
 	private AccountTransactionRepository accountTransactionRepository;
+
+	@Autowired
+	private QuickSaveOrderRepository quickSaveOrderRepository;
 	
 	@Autowired
 	private TransactionCategoryRepository transactionCategoryRepository;
@@ -416,6 +422,31 @@ public class AccountService {
 		LOG.debug("Credit Transaction to Account: New Number of Transactions: ->" + atl.size());
 		LOG.debug("Credit Transaction to Account: Account Updated.");
 		
+	}
+
+	public void quickSave(Account account, QuickSaveOrder order) {
+
+		LOG.debug("Add QuickSave order to Account:");
+
+		account = this.getAccountById(account.getId());
+		List<QuickSaveOrder> qsol = account.getQuickSaveOrderList();
+
+		// if the list is null, then its the first order
+		if (qsol == null) {
+			qsol = new ArrayList<QuickSaveOrder>();
+		}
+
+		LOG.debug("Add order to Account: Current Number of orders: ->" + qsol.size());
+
+		qsol.add(order);
+		account.setQuickSaveOrderList(qsol);
+
+		// Update Account
+		accountRepository.save(account);
+
+		LOG.debug("Add order to Account: New Number of orders: ->" + qsol.size());
+		LOG.debug("Add order to Account: Account Updated.");
+
 	}
 	
 	/*

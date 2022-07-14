@@ -26,7 +26,7 @@
 		    			<div class="col-lg-12">
 	                    	<div class="card">
                       			<div class="card-header bg-flat-color-1">
-                        			<strong class="card-title text-white">QuickSave! Save 100$</strong>
+                        			<strong class="card-title text-white">QuickSave - Save up every month for your dream!</strong>
                       			</div>
 	                      		<form th:action="@{/account/quick-save}" method="post">
 		                     		<div class="card-body card-block">
@@ -52,9 +52,16 @@
 				            					</div>
 					                        </div>
 					                   	</div>
-                      				</div> <!-- End Card Body -->
+										<div class="row form-group">
+											<div class="col col-sm-3">
+												<label class="form-control-label"><strong>Amount to save every month</strong></label>
+												<input type="text" class="form-control" th:field="${transaction.amount}" required th:pattern="${patternTransactionAmount}">
+												<small class="form-text text-muted">ex. $100.00</small>
+											</div>
+										</div>
+									</div> <!-- End Card Body -->
 		                   			<div class="card-footer">
-		                     			<button type="submit" id="formSubmitButton" class="btn btn-primary btn-sm"><i class="fa fa-dot-circle-o"></i> Save Now!</button>
+		                     			<button type="submit" id="formSubmitButton" class="btn btn-primary btn-sm"><i class="fa fa-dot-circle-o"></i> Save Every Month!</button>
 		                  			</div> <!-- End Card Footer -->
                      			</form>
                     		</div> <!-- End Card -->

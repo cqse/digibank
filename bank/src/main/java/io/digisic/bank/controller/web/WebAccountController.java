@@ -1,13 +1,5 @@
 package io.digisic.bank.controller.web;
 
-import io.digisic.bank.model.Account;
-import io.digisic.bank.model.AccountTransaction;
-import io.digisic.bank.model.security.Users;
-import io.digisic.bank.service.AccountService;
-import io.digisic.bank.service.UserService;
-import io.digisic.bank.util.Constants;
-import io.digisic.bank.util.Messages;
-import io.digisic.bank.util.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +17,15 @@ import java.security.Principal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.digisic.bank.model.Account;
+import io.digisic.bank.model.AccountTransaction;
+import io.digisic.bank.model.security.Users;
+import io.digisic.bank.service.AccountService;
+import io.digisic.bank.service.UserService;
+import io.digisic.bank.util.Constants;
+import io.digisic.bank.util.Messages;
+import io.digisic.bank.util.Patterns;
 
 @Controller
 @RequestMapping(Constants.URI_ACCOUNT)
@@ -532,6 +533,79 @@ public class WebAccountController extends WebCommonController {
             model.addAttribute(MODEL_ATT_PATTERN_TRANS_AMOUNT, Patterns.TRANSACTION_AMOUNT);
 
             return Constants.VIEW_XFER_BETWEEN;
+        }
+
+
+        // if this is a checking account
+        if (accountService.isSavingsAccount(toAcct)) {
+
+            // return the savings view - ensure the account for the deposit is in focus
+            return Constants.DIR_REDIRECT + Constants.VIEW_SAV_VIEW + "?" + MODEL_ATT_ACCT_SEL_SWITCH + "=" + toAcct.getId();
+
+        }
+
+        // Return to the checking view - ensure the account for the deposit is in focus
+        return Constants.DIR_REDIRECT + Constants.VIEW_CHK_VIEW + "?" + MODEL_ATT_ACCT_SEL_SWITCH + "=" + toAcct.getId();
+
+    }
+
+
+    @GetMapping(Constants.URI_QUICK_SAVE)
+    public String quickSave(Principal principal, Model model) {
+
+        // Set Display Defaults
+        setDisplayDefaults(principal, model);
+
+        Users user = userService.findByUsername(principal.getName());
+
+        // Get all accounts
+        List<Account> accountList = accountService.getCheckingAccounts(user);
+        accountList.addAll(accountService.getSavingsAccounts(user));
+        model.addAttribute(MODEL_ATT_ACCT_LIST, accountList);
+        model.addAttribute(MODEL_ATT_TO_ACCOUNT, Long.valueOf(0));
+
+
+        AccountTransaction accountTransaction = new AccountTransaction();
+        model.addAttribute(MODEL_ATT_ACCT_TRANS, accountTransaction);
+
+        // Add format patterns
+        model.addAttribute(MODEL_ATT_PATTERN_TRANS_AMOUNT, Patterns.TRANSACTION_AMOUNT);
+
+        return Constants.VIEW_QUICK_SAVE;
+
+    }
+
+    @PostMapping(Constants.URI_QUICK_SAVE)
+    public String quickSave(Principal principal, Model model,
+                           @ModelAttribute(MODEL_ATT_TO_ACCOUNT) Long toAccount,
+                           @ModelAttribute(MODEL_ATT_ACCT_TRANS) AccountTransaction accountTransaction) {
+
+        // Set Display Defaults
+        setDisplayDefaults(principal, model);
+
+        LOG.debug("Quick Save: To Account ID: -> " + toAccount);
+
+        boolean bError = false;
+
+        Account toAcct = accountService.getAccountById(toAccount);
+
+        Users user = userService.findByUsername(principal.getName());
+
+        // TODO implement
+
+        if (bError) {
+
+            // Get all accounts
+            List<Account> accountList = accountService.getCheckingAccounts(user);
+            accountList.addAll(accountService.getSavingsAccounts(user));
+            model.addAttribute(MODEL_ATT_ACCT_LIST, accountList);
+            model.addAttribute(MODEL_ATT_TO_ACCOUNT, toAccount);
+            model.addAttribute(MODEL_ATT_ACCT_TRANS, accountTransaction);
+
+            // Add format patterns
+            model.addAttribute(MODEL_ATT_PATTERN_TRANS_AMOUNT, Patterns.TRANSACTION_AMOUNT);
+
+            return Constants.VIEW_QUICK_SAVE;
         }
 
 

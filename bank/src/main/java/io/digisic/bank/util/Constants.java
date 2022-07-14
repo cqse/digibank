@@ -74,6 +74,7 @@ public class Constants {
 	public static final String URI_DEPOSIT				= "/deposit";
 	public static final String URI_WITHDRAW				= "/withdraw";
 	public static final String URI_XFER_BETWEEN			= "/xfer-between";
+	public static final String URI_QUICK_SAVE			= "/quick-save";
 	public static final String URI_CREDIT				= "/credit";
 	public static final String URI_CREDIT_APP			= "/credit-app";
 	public static final String URI_CREDIT_APP_STATUS	= "/credit-app-status";
@@ -166,6 +167,7 @@ public class Constants {
 	public static final String VIEW_DEPOSIT 		= "deposit";
 	public static final String VIEW_WITHDRAW 		= "withdraw";
 	public static final String VIEW_XFER_BETWEEN 	= "xfer-between";
+	public static final String VIEW_QUICK_SAVE 		= "quick-save";
 	public static final String VIEW_CREDIT_APP 		= "credit-app";
 	public static final String VIEW_CREDIT_APP_ST 	= "credit-app-status";
 	public static final String VIEW_CREDIT_VIEW 	= "credit-view";

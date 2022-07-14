@@ -516,9 +516,8 @@ public class WebAccountController extends WebCommonController {
         } else {
 
             // Error from and to account cannot be the same
-            // TODO disabled for debugging
-            //bError = true;
-            //model.addAttribute(MODEL_ATT_ERROR_MSG, "Can not trasnsfer from and to the same account.");
+            bError = true;
+            model.addAttribute(MODEL_ATT_ERROR_MSG, "Can not trasnsfer from and to the same account.");
 
         }
 

@@ -82,7 +82,6 @@ public class Account {
 	private List<AccountTransaction> acountTransactionList;
 
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@OrderBy("transaction_date DESC")
 	@JsonIgnore
 	private List<QuickSaveOrder> quickSaveOrderList;
 	

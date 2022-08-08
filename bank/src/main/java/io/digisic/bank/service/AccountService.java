@@ -378,20 +378,22 @@ public class AccountService {
 	public void creditTransaction(Account account, AccountTransaction accountTransaction) {
 		
 		LOG.debug("Credit Transaction to Account:");
-		
-		account = this.getAccountById(account.getId());
+
+		Optional<Account> act = accountRepository.findById(account.getId());
+
+		if (act.isPresent()) {
+			account = act.get();
+		}else {
+			account = null;
+		}
 		BigDecimal balance = account.getCurrentBalance();
 		List<AccountTransaction> atl = account.getAcountTransactionList();
-		
-		// if the list is null, then its the first transaction
-		if (atl == null) {
-			atl = new ArrayList<AccountTransaction>();
-		}
-		else { // else we are adding another transaction to the list so calculate the new update
-			balance = balance.add(accountTransaction.getAmount());
-			account.setCurrentBalance(balance);
-		}
-		
+
+		BigDecimal amount = accountTransaction.getAmount();
+
+		balance = balance.add(amount);
+		account.setCurrentBalance(balance);
+
 		LOG.debug("Credit Transaction to Account: Current Number of Transactions: ->" + atl.size());
 
 		// if Category was not set, default to MISC
@@ -481,7 +483,7 @@ public class AccountService {
 
 		LOG.debug("Debit Transaction to Account: New Number of Transactions: ->" + atl.size());
 		LOG.debug("Debit Transaction from Account: Account Updated.");
-		
+
 	}
 	
 	/*

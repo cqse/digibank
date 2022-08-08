@@ -379,6 +379,8 @@ public class AccountService {
 		
 		LOG.debug("Credit Transaction to Account:");
 
+		BigDecimal amount = accountTransaction.getAmount();
+
 		Optional<Account> act = accountRepository.findById(account.getId());
 
 		if (act.isPresent()) {
@@ -389,12 +391,8 @@ public class AccountService {
 		BigDecimal balance = account.getCurrentBalance();
 		List<AccountTransaction> atl = account.getAcountTransactionList();
 
-		BigDecimal amount = accountTransaction.getAmount();
-
 		balance = balance.add(amount);
 		account.setCurrentBalance(balance);
-
-		LOG.debug("Credit Transaction to Account: Current Number of Transactions: ->" + atl.size());
 
 		// if Category was not set, default to MISC
 		if (accountTransaction.getTransactionCategory() == null) {
@@ -415,7 +413,6 @@ public class AccountService {
 		// Update Account
 		accountRepository.save(account);
 		
-		LOG.debug("Credit Transaction to Account: New Number of Transactions: ->" + atl.size());
 		LOG.debug("Credit Transaction to Account: Account Updated.");
 		
 	}
@@ -438,6 +435,8 @@ public class AccountService {
 		
 		LOG.debug("Debit Transaction from Account:");
 
+		BigDecimal amount = accountTransaction.getAmount().multiply(new BigDecimal(-1));
+
 		Optional<Account> act = accountRepository.findById(account.getId());
 
 		if (act.isPresent()) {
@@ -448,12 +447,8 @@ public class AccountService {
 		BigDecimal balance = account.getCurrentBalance();
 		List<AccountTransaction> atl = account.getAcountTransactionList();
 
-		BigDecimal amount = accountTransaction.getAmount().multiply(new BigDecimal(-1));
-
 		balance = balance.add(amount);
 		account.setCurrentBalance(balance);
-
-		LOG.debug("Debit Transaction to Account: Current Number of Transactions: ->" + atl.size());
 		
 		// if Category was not set, default to MISC
 		if (accountTransaction.getTransactionCategory() == null) {
@@ -481,7 +476,6 @@ public class AccountService {
 			this.overdraftCharge(account, accountTransaction);
 		}
 
-		LOG.debug("Debit Transaction to Account: New Number of Transactions: ->" + atl.size());
 		LOG.debug("Debit Transaction from Account: Account Updated.");
 
 	}

@@ -378,21 +378,21 @@ public class AccountService {
 	public void creditTransaction(Account account, AccountTransaction accountTransaction) {
 		
 		LOG.debug("Credit Transaction to Account:");
-		
-		account = this.getAccountById(account.getId());
+
+		BigDecimal amount = accountTransaction.getAmount();
+
+		Optional<Account> act = accountRepository.findById(account.getId());
+
+		if (act.isPresent()) {
+			account = act.get();
+		}else {
+			account = null;
+		}
 		BigDecimal balance = account.getCurrentBalance();
 		List<AccountTransaction> atl = account.getAcountTransactionList();
-		
-		// if the list is null, then its the first transaction
-		if (atl == null) {
-			atl = new ArrayList<AccountTransaction>();
-		}
-		else { // else we are adding another transaction to the list so calculate the new update
-			balance = balance.add(accountTransaction.getAmount());
-			account.setCurrentBalance(balance);
-		}
-		
-		LOG.debug("Credit Transaction to Account: Current Number of Transactions: ->" + atl.size());
+
+		balance = balance.add(amount);
+		account.setCurrentBalance(balance);
 
 		// if Category was not set, default to MISC
 		if (accountTransaction.getTransactionCategory() == null) {
@@ -413,7 +413,6 @@ public class AccountService {
 		// Update Account
 		accountRepository.save(account);
 		
-		LOG.debug("Credit Transaction to Account: New Number of Transactions: ->" + atl.size());
 		LOG.debug("Credit Transaction to Account: Account Updated.");
 		
 	}
@@ -435,23 +434,19 @@ public class AccountService {
 	public void debitTransaction(Account account, AccountTransaction accountTransaction) {
 		
 		LOG.debug("Debit Transaction from Account:");
-		
-		account = this.getAccountById(account.getId());
-		
-		List<AccountTransaction> atl = account.getAcountTransactionList();
-		
-		BigDecimal balance = account.getCurrentBalance();
-		BigDecimal amount = accountTransaction.getAmount();
-		boolean overdraft = false;
-		
-		// if the withdraw is greater than the balance, charge a fee
-		if (amount.compareTo(balance) == 1) {
-			overdraft = true;
+
+		BigDecimal amount = accountTransaction.getAmount().multiply(new BigDecimal(-1));
+
+		Optional<Account> act = accountRepository.findById(account.getId());
+
+		if (act.isPresent()) {
+			account = act.get();
+		}else {
+			account = null;
 		}
-		
-		// Convert amount to a negative number since it is a withdraw
-		BigDecimal negOne = new BigDecimal(-1);
-		amount = amount.multiply(negOne);	
+		BigDecimal balance = account.getCurrentBalance();
+		List<AccountTransaction> atl = account.getAcountTransactionList();
+
 		balance = balance.add(amount);
 		account.setCurrentBalance(balance);
 		
@@ -475,18 +470,14 @@ public class AccountService {
 		
 		// Update Account
 		accountRepository.save(account);
-		
-		
-		
+
 		// if there is a fee, then add that transaction
-		if (overdraft) {
-			
+		if (amount.multiply(new BigDecimal(-1)).compareTo(balance) == 1) {
 			this.overdraftCharge(account, accountTransaction);
 		}
-	
-		
+
 		LOG.debug("Debit Transaction from Account: Account Updated.");
-		
+
 	}
 	
 	/*
